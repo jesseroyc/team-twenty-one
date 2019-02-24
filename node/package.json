@@ -1,0 +1,43 @@
+{
+  "name": "team-twenty-one",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "build": "webpack",
+    "build-watch": "webpack -w & nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jesse Roy-Cote",
+  "license": "MIT",
+  "description": "ENEL 400 - TT1 App",
+  "babel": {
+    "presets": [
+      "env",
+      "react"
+    ],
+    "plugins": [
+      "transform-object-rest-spread"
+    ]
+  },
+  "devDependencies": {
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "nodemon": "^1.12.5",
+    "source-map-support": "^0.5.10",
+    "webpack": "^4.29.5",
+    "webpack-node-externals": "^1.6.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "isomorphic-fetch": "^2.2.1",
+    "react-router-dom": "^4.2.2",
+    "serialize-javascript": "^1.4.0"
+  }
+}
