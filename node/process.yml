@@ -1,6 +1,6 @@
 apps:
   - name     : 'app'
-    script   : 'server.js'
+    script   : './server-build/index.js'
     cwd      : '/srv/www'
     exec_mode: 'cluster'
     instance : 'max'

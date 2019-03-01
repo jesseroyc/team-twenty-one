@@ -38,7 +38,7 @@ touch /data/db/.mongodb_password_set
 echo "========================================================================"
 echo "You can now connect to the admin MongoDB server using:"
 echo ""
-echo "    mongo admin -u $MONGODB_ADMIN_USER -p $MONGODB_ADMIN_PASS --host <host> --port <port>"
+echo "    docker exec -it Database mongo admin -u $MONGODB_ADMIN_USER -p $MONGODB_ADMIN_PASS --host <host> --port <port>"
 echo ""
 echo "Please remember to change the admin password as soon as possible!"
 echo "========================================================================"
