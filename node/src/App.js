@@ -2,11 +2,11 @@ import React from 'react';
 import { renderRoutes } from 'react-router-config';
 import { Switch, NavLink } from 'react-router-dom';
 
-import Routes from './routes';
+import Routes from './routes/index';
 
-import Home from './Home';
-import Todos from './Todos';
-import NotFound from './NotFound';
+import Home from './pages/Home';
+import Todos from './pages/Todos';
+import NotFound from './pages/NotFound';
 
 export default props => {
   return (

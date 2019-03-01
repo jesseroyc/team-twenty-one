@@ -9,7 +9,7 @@ COPY /server-build/index.js /srv/www/server-build/
 COPY /build/ /srv/www/build/
 WORKDIR /srv/www
 RUN npm config set maxsockets 5 && npm config set progress false
-RUN cd /srv/www/ && npm install --production
+RUN cd /srv/www/ && npm install --only=prod
 RUN npm install -g pm2
 CMD ["pm2", "start", "process.yml", "--no-daemon"]
 EXPOSE 8080
