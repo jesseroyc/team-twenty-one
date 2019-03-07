@@ -5,7 +5,6 @@ FROM node:carbon
 ENV NPM_CONFIG_LOGLEVEL warn
 COPY process.yml /srv/www/
 COPY package.json /srv/www/
-COPY /server-build/index.js /srv/www/server-build/
 COPY /build/ /srv/www/build/
 WORKDIR /srv/www
 RUN npm config set maxsockets 5 && npm config set progress false

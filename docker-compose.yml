@@ -5,14 +5,13 @@ services:
     container_name: Node
     build         : ./node
   nginx:
-    image         : nginx:stable
+    image         : nginx:alpine
     container_name: Nginx
     build         : ./nginx
     links         :
-      - node
+      - "node"
     ports:
       - "80:80"
-      - "443:443"
   mongodb:
     image         : mongo:3.4
     container_name: Database

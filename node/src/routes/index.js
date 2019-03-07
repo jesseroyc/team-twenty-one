@@ -1,4 +1,3 @@
-import App from '../App';
 import Home from '../pages/Home';
 import Todos from '../pages/Todos';
 import NotFound from '../pages/NotFound';
