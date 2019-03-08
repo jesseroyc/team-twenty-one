@@ -82,9 +82,96 @@ Docker Socket Ubuntu 16 Permission Fix
 > sudo chmod 666 /var/run/docker.sock
 
 
+curl -L http://toolbelt.treasuredata.com/sh/install-ubuntu-trusty-td-agent2.sh | sh
 
-> docker-compose up -d
-> docker login -u=testuser -p=testpassword -e=root@example.ch myregistrydomain.com:5043
-> docker tag ubuntu myregistrydomain.com:5043/test
-> docker push myregistrydomain.com:5043/test
-> docker pull myregistrydomain.com:5043/test
+sudo /etc/init.d/td-agent start
+
+tail /var/log/td-agent/td-agent.log
+
+gem install fluentd --no-rdoc --no-ri
+
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
+
+sudo sh -c "echo deb https://get.docker.com/ubuntu docker main > /etc/apt/sources.list.d/docker.list"
+
+sudo apt-get update
+
+sudo apt-get install lxc-docker
+
+docker --version
+
+Docker version 1.5.0, build a8a31ef
+
+sudo gpasswd -a sammy docker
+
+sudo service docker restart
+
+mkdir ~/fluentd-docker && cd ~/fluentd-docker
+
+sudo nano Dockerfile
+
+FROM ruby:2.2.0
+MAINTAINER kiyoto@treausuredata.com
+RUN apt-get update
+RUN gem install fluentd -v "~>0.12.3"
+RUN mkdir /etc/fluent
+RUN apt-get install -y libcurl4-gnutls-dev make
+RUN /usr/local/bin/gem install fluent-plugin-elasticsearch
+ADD fluent.conf /etc/fluent/
+ENTRYPOINT ["/usr/local/bundle/bin/fluentd", "-c", "/etc/fluent/fluent.conf"]
+
+sudo nano fluent.conf
+
+<source>
+  type tail
+  read_from_head true
+  path /var/lib/docker/containers/*/*-json.log
+  pos_file /var/log/fluentd-docker.pos
+  time_format %Y-%m-%dT%H:%M:%S
+  tag docker.*
+  format json
+</source>
+# Using filter to add container IDs to each event
+<filter docker.var.lib.docker.containers.*.*.log>
+  type record_transformer
+  <record>
+    container_id ${tag_parts[5]}
+  </record>
+</filter>
+
+<match docker.var.lib.docker.containers.*.*.log>
+  type elasticsearch
+  logstash_format true
+  host "#{ENV['ES_PORT_9200_TCP_ADDR']}" # dynamically configured to use Docker's link feature
+  port 9200
+  flush_interval 5s
+</match>
+
+docker build -t fluentd-es .
+
+docker images
+
+cd ~
+
+docker run -d -p 9200:9200 -p 9300:9300 --name es dockerfile/elasticsearch
+
+docker ps
+
+docker run -d --link es:es -v /var/lib/docker/containers:/var/lib/docker/containers fluentd-es
+
+docker ps
+
+curl -XGET 'http://localhost:9200/_all/_search?q=*'
+
+{"took":66,"timed_out":false,"_shards":{"total":5,"successful":5,"failed":0},"hits":{"total":0,"max_score":null,"hits":[]}}
+{"took":59,"timed_out":false,"_shards":{"tod","_id":"AUwLaKjcnpi39wqZnTXQ","_score":1.0,"_source":{"log":"2015-03-12 00:35:44 +0000 [info]: following tail of /var/lib/docker/containers/6abeb6ec0019b2198ed708315f4770fc7ec6cc44a10705ea59f05fae23b81ee9/6abeb6ec0019b2198ed708315f4770fc7ec6cc44a10705ea59f05fae23b81ee9-json.log\n","stream":"stdout","container_id":"6abeb6ec0019b2198ed708315f4770fc7ec6cc44a10705ea59f05fae23b81ee9","@timestamp":"2015-03-12T00:35:44+00:00"}}]}}
+
+Step 8 — Taking Event Logs to the Next Level
+Now that your container events are being saved by Elasticsearch, what should you do next? There are plenty of useful things to do with Elasticsearch. If you're looking for ideas, you may want to check out:
+
+Basic Elasticsearch operations
+Adding a dashboard so you can visualize your logs
+
+Use Case 1: Real-time Log Search and Log Archiving
+
+Use Case 2: Centralized Application Logging

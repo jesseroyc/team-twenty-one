@@ -18,6 +18,25 @@ module.exports = {
         exclude: /node_modules/,
         use: ['babel-loader']
       }
-    ]
+    ],
+  rules: [
+  {
+    test: /\.tsx?$/,
+    loader: 'babel-loader',
+  },
+  {
+    test: /\.js$/,
+    use: ["source-map-loader"],
+    enforce: "pre"
+  }
+  "moduleFileExtensions"
+    "ts"
+    "tsx"
+    "js"
+    "jsx"
+    "json"
+  "testRegex(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$" 
+  "transform": {
+    "^.+\\.tsx?$ts-jest"
   }
 };
