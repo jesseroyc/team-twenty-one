@@ -6,21 +6,19 @@ DEVELOPED WITH
       / ___ \ V  V /  ___) | | |___| | (_) | |_| | (_| |\__, |
      /_/   \_\_/\_/  |____/   \____|_|\___/ \__,_|\__,_|  /_/ 
  ----------------------------------------------------------------- 
-\
+
 Node.js test app featuring React, MongoDb, Express, Webpack, Babel, 
 NGINX, PM2, Docker and Docker-Compose. It was developed in a Cloud IDE 
 hosted in the same AWS EC2 Ubuntu 16.04 server it was deployed on.
-\
+
 To get started clone the repo and install Docker & Docker-Compose.
-As suggested: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html\
-\
+
 ```
 sudo yum update -y                 # Update environment
 sudo yum install docker            # Install docker
 sudo service docker start          # Start docker service
 sudo usermod -a -G docker ec2-user # Add some user to group
 ```
-\
 \
 Stage project for distribution
 
@@ -29,8 +27,7 @@ cd node
 npm install
 npm run pro:build
 ```
-
-
+\
 This will transpile src files to ES5 and start the local
 server rendering build.
 
@@ -38,31 +35,30 @@ server rendering build.
 npm install
 npm run dev:start
 ```
-
-
+\
 // TO DO BEFORE using `docker-compose`
 
 > NGINX still needs testing for a proper release. Currently, set
 > frontend and backend hosts to the same ip load balance 1 app.
 
-
+\
 // TO DO BEFORE using `docker-compose`
 
 > Mongo is almost fully configured for production and is currently
 > in local testing phase. Current setup will deploy a mongo data
 > base that can be connected to.
 
-
+\
 On an ec2 server docker-compose is not symbolicly linked correctly.
 
 Setting up docker-compose
+
 ```
 sudo curl -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose                 # Places curl command into /usr/local/bin
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose # Sym link it properly with this!
 ```
-
-
+\
 Build docker container for node/pm2, nginx proxy, and mongo database.
 Make sure to be in your docker-compose.yml folder.
 
@@ -70,16 +66,15 @@ Make sure to be in your docker-compose.yml folder.
 docker-compose build -docker
 docker-compose up
 ```
-
-
+\
 View current docker containers, volumes, images, and networks.
+
 `docker ps -a`
-
-
+\
 Start bash in a container.
+
 `docker exec -it [container-id] bash`
-
-
+\
 CTRL + C to stop docker deployment gracefully. Remove built docker
 environment using the following. At the moment, the '-f' prepend for
 faster testing. Careful when executing these in your environment.
@@ -90,8 +85,7 @@ docker rm $(docker ps -a) -f      # remove current containers
 docker rmi $(docker images -a) -f # remove current images 
 docker system prune --volumes -f  # restore device space used
 ```
-
-
+\
 The MongoDb scripts may need some extended permissions, chmod your
 group with executen `x` permissions. Remove permissions with `-x`.
 
@@ -99,20 +93,18 @@ group with executen `x` permissions. Remove permissions with `-x`.
 chmod +x run.sh
 chmod +x set_mongodb_password.sh
 ```
-
-
+\
 The ubuntu container might need extended permissions on docker.sock.
 
 `sudo chmod 666 /var/run/docker.sock`
-
-
+\
 This project receives post requests from an arduino MK2 anywhere with
 wifi and adds the values to the database with the following data structure
 
 Many to many
 
 Current arduino inout
-
+\
 ```
 [
   {
@@ -191,7 +183,7 @@ val:[23.2,21.3,54.2,....]
 // use modulo indexing`
 // `single array expansion query.`
 ```
-
+\
 Next Releases:
 
 - Material UI frontend with graphs.
