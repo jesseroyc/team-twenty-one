@@ -6,25 +6,22 @@ DEVELOPED WITH
       / ___ \ V  V /  ___) | | |___| | (_) | |_| | (_| |\__, |
      /_/   \_\_/\_/  |____/   \____|_|\___/ \__,_|\__,_|  /_/ 
  ----------------------------------------------------------------- 
-
-
+\
 Node.js test app featuring React, MongoDb, Express, Webpack, Babel, 
 NGINX, PM2, Docker and Docker-Compose. It was developed in a Cloud IDE 
 hosted in the same AWS EC2 Ubuntu 16.04 server it was deployed on.
-
-
+\
 To get started clone the repo and install Docker & Docker-Compose.
-As suggested: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html
-
-
+As suggested: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html\
+\
 ```
 sudo yum update -y                 # Update environment
 sudo yum install docker            # Install docker
 sudo service docker start          # Start docker service
 sudo usermod -a -G docker ec2-user # Add some user to group
 ```
-
-
+\
+\
 Stage project for distribution
 
 ```
