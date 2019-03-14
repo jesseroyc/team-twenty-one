@@ -36,13 +36,13 @@ npm install
 npm run dev:start
 ```
 \
-// TO DO BEFORE using `docker-compose`
+TO DO: Before using `docker-compose`
 
 > NGINX still needs testing for a proper release. Currently, set
 > frontend and backend hosts to the same ip load balance 1 app.
 
 \
-// TO DO BEFORE using `docker-compose`
+TO DO: Before using `docker-compose`
 
 > Mongo is almost fully configured for production and is currently
 > in local testing phase. Current setup will deploy a mongo data
