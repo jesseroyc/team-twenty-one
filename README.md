@@ -69,11 +69,15 @@ docker-compose up
 \
 View current docker containers, volumes, images, and networks.
 
-`docker ps -a`
+```
+docker ps -a
+```
 \
 Start bash in a container.
 
-`docker exec -it [container-id] bash`
+```
+docker exec -it [container-id] bash
+```
 \
 CTRL + C to stop docker deployment gracefully. Remove built docker
 environment using the following. At the moment, the '-f' prepend for
@@ -96,7 +100,9 @@ chmod +x set_mongodb_password.sh
 \
 The ubuntu container might need extended permissions on docker.sock.
 
-`sudo chmod 666 /var/run/docker.sock`
+```
+sudo chmod 666 /var/run/docker.sock
+```
 \
 This project receives post requests from an arduino MK2 anywhere with
 wifi and adds the values to the database with the following data structure
