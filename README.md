@@ -175,3 +175,85 @@ Adding a dashboard so you can visualize your logs
 Use Case 1: Real-time Log Search and Log Archiving
 
 Use Case 2: Centralized Application Logging
+
+Data Structure
+
+
+`Many to many`
+`Current arduino inout`
+[
+  {
+  inp:[
+      {
+        typ: "tmp",
+        _id: 0,
+        val: 23.2,
+        tim: 20387
+      }
+    ]
+  },
+  {
+  inp:[
+      {
+        typ: "moi",
+        _id: 0,
+        val: 23.2,
+        tim: 20387
+      }
+    ]
+  },
+  {
+  inp:[
+      {
+        typ:"lum",
+        _id:0,
+        val:23.2,
+        tim:20387
+      }
+    ]
+  }
+]
+
+
+`Atomic taxin but valuable`
+{
+inp:[
+  {
+    _id:0,
+    tim:3232421
+  }
+],
+[
+  {
+    typ:"tmp",
+    val:23.2,
+    typ:"moi",
+    val:21.3,
+    typ:"lum",
+    tim:54.2
+  }
+]
+}
+
+
+`Optimized Data Construct`
+{
+  inp:[
+    {
+      _id:0,
+      typ:["tmp","moi","lum"],
+      val:[23.2,21.3,54.2],
+      tim:323422
+    }
+  ]
+}
+
+`Finally timestamps have set`
+`step size. To export for graph.`
+
+  `0=tmp`     `2-lum`
+val:[23.2,21.3,54.2,....]
+        `1=moi`
+
+`use modulo indexing`
+`single array expansion query.`
