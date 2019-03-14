@@ -1,14 +1,11 @@
 const path = require('path');
 const nodeExternals = require("webpack-node-externals");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-// const WebpackMd5Hash = require("webpack-md5-hash");
 
 module.exports = {
-  mode: "production",
-  entry: { main: './lib/server/server.js' },
+  entry: { main: './dev/server/server.js' },
   output: {
-    path: path.resolve(__dirname, 'build/server'),
+    path: path.resolve(__dirname, 'build/server/'),
     filename: 'server.js'
   },
   externals: [nodeExternals()],
@@ -21,7 +18,7 @@ module.exports = {
         }
       },
       {
-        test: /\.scss$/,
+        test: /\.css$/,
         use:  [  'style-loader', MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader']
       }
     ]
