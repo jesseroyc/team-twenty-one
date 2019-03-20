@@ -1,46 +1,52 @@
-import importEnvVars from "./service/envService";
-const ENVS = importEnvVars;
-
-import logger from "./service/winston-logger";
-import morgan from "morgan";
-
-import fs from 'fs';
-import path from 'path';
-import express from 'express';
-import serialize from 'serialize-javascript';
-import createError from 'http-errors';
+import fs           from 'fs';
+import path         from 'path';
+import express      from 'express';
+import serialize    from 'serialize-javascript';
 import cookieParser from 'cookie-parser';
-import compression from 'compression';
+import compression  from 'compression';
+import logger       from "./service/winston-logger";
+import morgan       from "morgan";
 
-import React from 'react';
-import ReactDOMServer from "react-dom/server";
+import React                       from 'react';
+import ReactDOMServer              from "react-dom/server";
 import { StaticRouter, matchPath } from 'react-router-dom';
-import App from '../client/App.js';
-import Routes from '../client/routes/index.js';
-import Record from "./controller/record"
+import App                         from '../client/App.js';
+import Routes                      from '../client/routes/index.js';
 
-const HOST = process.env.IP;
-const PORT = process.env.PORT;
+import MongoService from "./service/mongoService";
+
+const SERVER_PORT = 8080;
 
 const app = express();
 
+// Server Middleware
 app.use(morgan('dev'));
-
 app.use(compression());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Static asset serving
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Arduino MK2 data get route
+app.get('/record/:tmp/:moi/:lum',function(req,res,next){
+  /* Refactored into class */
+  // const mongoService = new MongoService("0.0.0.0","27017","admin","4dmInP4ssw0rd");
+  // mongoService.setRecord(req.params.tmp,req.params.moi,req.params.lum);
+  // mongoService.getReadings("mydatabase","records");
+  // mongoService.insertReading("mydatabase","records");
+  next();
+});
 
 // Server Side Rendering
-app.get('*', (req, res, next) => {
+app.get('*', function(req, res) {
   const currentRoute = Routes.find( route => matchPath(req.url, route) ) || {};
   let promise = (currentRoute.loadData) ? currentRoute.loadData() : Promise.resolve(null);
 
   promise.then(data => {
     const context = { data };
-    const indexFile = path.resolve(__dirname,'../index.html');
+    const indexFile = path.resolve(__dirname,'./index.html');
     
     fs.readFile(indexFile, 'utf8', (err, indexData) => {
       if (err) {
@@ -65,36 +71,25 @@ app.get('*', (req, res, next) => {
     });
   });
 });
-// 404 Catcher
-app.use(function(req, res, next) {
-  next(createError(404));
-});
 
-// Error handle
-app.use(function(err, req, res, next) {
-  // Server defined error exclusive
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // add this line to include winston logging
-  logger.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
-
-  // Render error response
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-app.listen(PORT, err => {
+// Server listener and error logger
+app.listen(SERVER_PORT, function(err,req,res) {
   
 	if (err) {
-		logger.error(err);
-		process.exit(1);
+    // Server reported errors
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+  
+    // Reported by winston
+    logger.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+  
+    // Render error response
+    res.status(err.status || 500);
+    res.render('error');
 	}
+  
+	logger.info(`APP is now running on port ${SERVER_PORT}`);
 	
-  app.route('/record/view').get(Record.view);
-  app.route('/record/:values').post(Record.post);
-	
-	logger.info(
-		`APP is now running on port ${PORT} at ${HOST}`
-	);
 });
+
+export default app;

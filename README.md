@@ -42,12 +42,15 @@ TO DO: Before using `docker-compose`
 > frontend and backend hosts to the same ip load balance 1 app.
 
 \
-TO DO: Before using `docker-compose`
+Local Mongo Start
 
-> Mongo is almost fully configured for production and is currently
-> in local testing phase. Current setup will deploy a mongo data
-> base that can be connected to.
-
+```
+cd mongo                         # go to /mongo directory
+docker build --tag=mongo .       # build image tagged mongo
+docker run -p 27017:27017 mongo  # start container and bind port
+npm run dev:babel                # transpile code with babel
+npm run dev:start                # start local server
+```
 \
 On an ec2 server docker-compose is not symbolicly linked correctly.
 
@@ -84,10 +87,10 @@ environment using the following. At the moment, the '-f' prepend for
 faster testing. Careful when executing these in your environment.
 
 ```
-docker kill $(docker ps -a) -f    # kill running container
-docker rm $(docker ps -a) -f      # remove current containers
-docker rmi $(docker images -a) -f # remove current images 
-docker system prune --volumes -f  # restore device space used
+docker container stop $(docker container ls -aq) # stop containers
+docker container rm $(docker container ls -aq)   # remove containers
+docker rmi $(docker images -aq)                  # remove current images 
+docker system prune --volumes -f                 # restore device space used
 ```
 \
 The MongoDb scripts may need some extended permissions, chmod your

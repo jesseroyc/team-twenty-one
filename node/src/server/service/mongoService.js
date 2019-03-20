@@ -1,157 +1,108 @@
-import logger from "./winston-logger";
+import mongodb from 'mongodb';
+import logger  from "./winston-logger";
 
-import assert from "assert";
-import {tStamp,rando} from './helpers';
-import importEnvVars from "./envService";
-import async from "async";
+const MongoClient = mongodb.MongoClient;
 
-const ENVS = importEnvVars;
-const {
-  MONGO_ADMIN_USER, MONGO_ADMIN_PASS, MONGO_ADMIN_ROLE, MONGO_ADMIN_NAME, 
-  MONGO_OWNER_USER, MONGO_OWNER_PASS, MONGO_OWNER_ROLE, MONGO_OWNER_NAME
-} = ENVS; // TO DO - GET URLS OF DEPLOYMENT
+export default class MongoService {
   
-// Connection client
-const MongoClient = require('mongodb').MongoClient;
-
-// Connection URL
-const url = `mongodb:${process.env.IP}:${process.env.PORT}`;
-
-const connectTest = function () {
-    MongoClient.connect(url, function(err, client) {
-        if (err.message.code === 'ETIMEDOUT') {
-            logger.info("TEST: Attempting reconnect after time out.");
-            MongoClient.connect(url, {useNewUrlParser: true});
-        } else if(err){
-            logger.info("Failed to reconnect with {useNewUrlParser}");
-            logger.info(err);
-        }
-        logger.info(`TEST: Database connected ${process.env.IP} on ${process.env.PORT}`);
-        let db = new Mongo().getDB(MONGO_OWNER_NAME);
-        seedDatabase(db, function() {
-            client.close();
-        });
-    });
-};
-const seedDatabase = function(db, callback) {
-  const collection = db.collection('documents');
-  // Seeded 3 sets of temperature, moisture, light values
-  collection.insertMany([
-    {typ : 'tmp', id : 1, val: rando(0,40), tim : tStamp(1)}, 
-    {typ : 'mos', id : 1, val: rando(0,40), tim : tStamp(1)}, 
-    {typ : 'lum', id : 1, val: rando(0,40), tim : tStamp(1)},
-    {typ : 'tmp', id : 2, val: rando(0,40), tim : tStamp(2)}, 
-    {typ : 'mos', id : 2, val: rando(0,40), tim : tStamp(2)}, 
-    {typ : 'lum', id : 2, val: rando(0,40), tim : tStamp(2)},
-    {typ : 'tmp', id : 3, val: rando(0,40), tim : tStamp(3)}, 
-    {typ : 'mos', id : 3, val: rando(0,40), tim : tStamp(3)}, 
-    {typ : 'lum', id : 3, val: rando(0,40), tim : tStamp(3)}
-  ], function(err, result) {
-    if(err){ 
-      logger.info(err);
-      db.close();
-    }
-    assert.equal(err, null);
-    // TO DO INCLUDE ASSERTS
-    logger.info("TEST: Inserted 3 documents into the collection");
-    callback(result);
-  });
-};
-
-const getDB = function(err) {
-  if(err){ logger.info(err); return null; }
-  return new Mongo().getDB(MONGO_OWNER_NAME);
-};
-
-const drop = function(done) {
+  constructor(MONGO_HOST,MONGO_PORT,MONGO_USER,MONGO_PASS){
+    this.HOST = MONGO_HOST;
+    this.PORT = MONGO_PORT;
+    this.USER = MONGO_USER;
+    this.PASS = MONGO_PASS;
+    this.recordId = -1;
+    this.record = {};
+  }
   
-    MongoClient.connect(url, function(err, client) {
-        if (err.message.code === 'ETIMEDOUT') {
-            logger.info("Attempting reconnect after time out.");
-            MongoClient.connect(url, {useNewUrlParser: true});
-        } else if (err){
-            logger.info("Failed to reconnect with {useNewUrlParser}");
-            logger.info(err);
-            client.close();
-        }
-        
-        logger.info(`Database connected ${process.env.IP} on ${process.env.PORT}`);
-        let db = new Mongo().getDB(MONGO_OWNER_NAME);
-        
-        db.collections( function(err, collections) {
-          if(err){ 
-            logger.info(err);
-            client.close();
-          }
-          
-          async.each(collections, function(collection, cb) {
-            if (collection.collectionName.indexOf('system') === 0) {
-              return cb();
-            }
-            collection.remove(cb);
-            logger.info("Collection removed.");
-          }, done);
-        });
-    });
-};
-const addOneSet = function(arraySetOfObj, callback) {
+  setRecord(tmperature,moisture,brightness){
+    this.recordId = this.recordId + 1;
+    this.record = {
+      _id: this.recordId, 
+      tim: Math.floor(Date.now() / 1000),
+      tmp: tmperature,
+      moi: moisture,
+      lum: brightness
+    };
+  }
   
-    MongoClient.connect(url, function(err, client) {
-        if (err.message.code === 'ETIMEDOUT') {
-            logger.info("Attempting reconnect after time out.");
-            MongoClient.connect(url, {useNewUrlParser: true});
-        } else if (err){
-            logger.info("Failed to reconnect with {useNewUrlParser}");
-            logger.info(err);
-            client.close();
-        }
-        
-        logger.info(`Database connected ${process.env.IP} on ${process.env.PORT}`);
-        let db = new Mongo().getDB(MONGO_OWNER_NAME);
-        
-        db.collection.insertOne([
-          arraySetOfObj[0],arraySetOfObj[1],arraySetOfObj[2]
-        ], function(err, result) {
+  /* STORE READING FROM URL PARAMS */
+  insertReading(DB_NAME,COL_NAME){
+    
+    let HOST = this.HOST;
+    let PORT = this.PORT;
+    let USER = this.USER;
+    let PASS = this.PASS;
+    let record = this.record;
+    
+    const url = `mongodb://${USER}:${PASS}@${HOST}:${PORT}`;
+    logger.info(url);
+    MongoClient.connect(url, { useNewUrlParser: true }, function(err, client) {
+      if(err) {
+        logger.info(`Failed server connection to ${HOST} on port ${PORT}`);
+        console.error(err);
+        client.close();
+      } 
+      else {
+        logger.info(`Successful server connection to ${HOST} on port ${PORT}`);
+      }
+      client.db(DB_NAME).collection(COL_NAME).insertOne( record, function(err, res) {
         if (err) {
-            logger.info(err);
-            client.close();
+          logger.info(`Failed 'insert' client request for ${COL_NAME} in ${DB_NAME}`);
+          console.error(err);
+          client.close();
+        } 
+        else {
+          logger.info(`Successful 'insert' client request for ${COL_NAME} in ${DB_NAME}`);
+          logger.info("Inserted Record:" +
+                      "\n  {" +
+                      "\n    _id: " + res.ops[0]["_id"] +
+                      "\n    tim: " + res.ops[0]["tim"] +
+                      "\n    tmp: " + res.ops[0]["tmp"] +
+                      "\n    moi: " + res.ops[0]["moi"] +
+                      "\n    lum: " + res.ops[0]["lum"] +
+                      "\n  }"
+          );
         }
-        
-          assert.equal(err, null);
-          // TO DO INCLUDE ASSERTS
-          logger.info("Added single set of 3 readings from sensors");
-          callback(result);
       });
-  });
-};
-const exportAll = function(callback) {
-  
-    MongoClient.connect(url, function(err, client) {
-        if (err.message.code === 'ETIMEDOUT') {
-            logger.info("Attempting reconnect after time out.");
-            MongoClient.connect(url, {useNewUrlParser: true});
-        } else if (err){
-            logger.info("Failed to reconnect with {useNewUrlParser}");
-            logger.info(err);
-            client.close();
-        }
-        
-        logger.info(`Database connected ${process.env.IP} on ${process.env.PORT}`);
-        let db = new Mongo().getDB(MONGO_OWNER_NAME);
-  
-        db.bios.find({val:{$all:[], 
-            function(err, result) {
-              if(err){
-                logger.info(err);
-                client.close();
-              }
-              assert.equal(err, null);
-              // TO DO INCLUDE ASSERTS
-              logger.info("All values exported");
-              callback(result);
-            }}
-        });
     });
-};
-
-export default { drop, getDB, connectTest, addOneSet, exportAll };
+  }
+  
+  /* GET READINGS, PLACE INTO ARRAY */
+  getReadings(DB_NAME,COL_NAME){
+    
+    let HOST = this.HOST;
+    let PORT = this.PORT;
+    let USER = this.USER;
+    let PASS = this.PASS;
+    let record = this.record;
+    
+    const url = `mongodb://${USER}:${PASS}@${HOST}:${PORT}`;
+    MongoClient.connect(url, { useNewUrlParser: true }, function(err, client) {
+      if(err) {
+        logger.info(`Failed server connection to ${HOST} on port ${PORT}`);
+        console.error(err);
+        client.close();
+      } 
+      else {
+        logger.info(`Successful server connection to ${HOST} on port ${PORT}`);
+      }
+      client.db(DB_NAME).collection(COL_NAME).find({}).toArray(function(err, result) {
+        if (err) {
+          logger.info(`Failed 'find' client request for ${COL_NAME} in ${DB_NAME}`);
+          console.error(err);
+          client.close();
+        } 
+        else {
+          let tmpArr = result.map(ele => parseFloat(ele.tmp)).filter(num => !Number.isNaN(num));
+          let moiArr = result.map(ele => parseFloat(ele.moi)).filter(num => !Number.isNaN(num));
+          let lumArr = result.map(ele => parseFloat(ele.lum)).filter(num => !Number.isNaN(num));
+          logger.info(`Successful 'find' client request for ${COL_NAME} in ${DB_NAME}` +
+          `\nTemperature Readings:\n [${tmpArr}]` +
+          `\nMoisture Readings:\n [${moiArr}]` +
+          `\nBrightness Readings:\n [${lumArr}]`
+          );
+        }
+      });
+    });
+  }
+}

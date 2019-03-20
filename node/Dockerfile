@@ -6,10 +6,10 @@ ENV NPM_CONFIG_LOGLEVEL warn
 COPY process.yml /srv/www/
 COPY package.json /srv/www/
 COPY .env /srv/www/
-COPY /dist/ /srv/www/
+COPY build/ /srv/www/
 WORKDIR /srv/www/
 RUN npm config set maxsockets 5 && npm config set progress false
-RUN cd /srv/www/ && npm install --only=prod
+RUN cd /srv/www/ && npm install
 RUN npm install -g pm2
 CMD ["pm2", "start", "process.yml", "--no-daemon"]
-EXPOSE 8080
+EXPOSE 80
