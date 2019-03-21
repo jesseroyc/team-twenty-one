@@ -107,90 +107,19 @@ The ubuntu container might need extended permissions on docker.sock.
 sudo chmod 666 /var/run/docker.sock
 ```
 \
-This project receives post requests from an arduino MK2 anywhere with
-wifi and adds the values to the database with the following data structure
+This project receives requests from the arduino MK2 anywhere with wifi
+connectivity and adds the values to the database with the following structure.
 
-Many to many
+Route Example: record/20.1/34.2/12.4
 
-Current arduino inout
-\
 ```
-[
   {
-  inp:[
-      {
-        typ: "tmp",
-        _id: 0,
-        val: 23.2,
-        tim: 20387
-      }
-    ]
-  },
-  {
-  inp:[
-      {
-        typ: "moi",
-        _id: 0,
-        val: 23.2,
-        tim: 20387
-      }
-    ]
-  },
-  {
-  inp:[
-      {
-        typ:"lum",
-        _id:0,
-        val:23.2,
-        tim:20387
-      }
-    ]
+    _id: 6
+    tim: 1553126557
+    tmp: 20.1
+    moi: 34.2
+    lum: 12.4
   }
-]
-
-
-// Atomic taxin but valuable
-{
-inp:[
-  {
-    _id:0,
-    tim:3232421
-  }
-],
-[
-  {
-    typ:"tmp",
-    val:23.2,
-    typ:"moi",
-    val:21.3,
-    typ:"lum",
-    tim:54.2
-  }
-]
-}
-
-
-// Optimized Data Construct`
-{
-  inp:[
-    {
-      _id:0,
-      typ:["tmp","moi","lum"],
-      val:[23.2,21.3,54.2],
-      tim:323422
-    }
-  ]
-}
-
-// Finally timestamps have set`
-// step size. To export for graph.`
-
-  `0=tmp`     `2-lum`
-val:[23.2,21.3,54.2,....]
-        `1=moi`
-
-// use modulo indexing`
-// `single array expansion query.`
 ```
 \
 Next Releases:
