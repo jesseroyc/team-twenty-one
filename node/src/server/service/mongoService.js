@@ -10,12 +10,17 @@ export default class MongoService {
     this.PORT = MONGO_PORT;
     this.USER = MONGO_USER;
     this.PASS = MONGO_PASS;
-    this.recordId = -1;
+    this.recordId = MongoService.incrementId();
     this.record = {};
   }
   
+  static incrementId() {
+    if (!this.latestId) this.latestId = 1;
+    else this.latestId++;
+    return this.latestId;
+  }
+  
   setRecord(tmperature,moisture,brightness){
-    this.recordId = this.recordId + 1;
     this.record = {
       _id: this.recordId, 
       tim: Math.floor(Date.now() / 1000),

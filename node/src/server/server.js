@@ -32,10 +32,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Arduino MK2 data get route
 app.get('/record/:tmp/:moi/:lum',function(req,res,next){
   /* Refactored into class */
-  // const mongoService = new MongoService("0.0.0.0","27017","admin","4dmInP4ssw0rd");
-  // mongoService.setRecord(req.params.tmp,req.params.moi,req.params.lum);
+  let mongoService = new MongoService("0.0.0.0","27017","admin","4dmInP4ssw0rd");
+  mongoService.setRecord(req.params.tmp,req.params.moi,req.params.lum);
   // mongoService.getReadings("mydatabase","records");
-  // mongoService.insertReading("mydatabase","records");
+  mongoService.insertReading("mydatabase","records");
   next();
 });
 
