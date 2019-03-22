@@ -15,7 +15,7 @@ import Routes                      from '../client/routes/index.js';
 
 import MongoService from "./service/mongoService";
 
-const SERVER_PORT = 8080;
+const SERVER_PORT = 80;
 
 const app = express();
 

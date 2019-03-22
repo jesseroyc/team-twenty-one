@@ -13,6 +13,8 @@
   "license": "MIT",
   "main": "server.js",
   "dependencies": {
+    "@material-ui/core": "^3.9.2",
+    "@material-ui/icons": "^3.0.2",
     "app-root-path": "^2.1.0",
     "async": "^2.6.2",
     "clean-webpack-plugin": "^2.0.0",
