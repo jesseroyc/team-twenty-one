@@ -4,6 +4,8 @@ import path      from 'path';
 import serialize from 'serialize-javascript';
 
 import React                       from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import ReactDOMServer              from "react-dom/server";
 import { StaticRouter, matchPath } from 'react-router-dom';
 import App                         from './App.js';
@@ -51,6 +53,8 @@ function index (req,res) {
         </div>
         
       );
+      
+      console.log("\n"+renderRequestResponse+"\n");
       
       return res.send(indexFileData
         .replace(`<div id="root"></div>`,renderRequestResponse)
