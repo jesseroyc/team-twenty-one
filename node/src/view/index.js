@@ -31,12 +31,14 @@ function index (req,res) {
       // REVIEW: Using const
       // TO DO: Integrate react apps for responses
       if (context.status === 404) { 
+        console.log("err")
         res.status(404);
         const renderRequestResponse = ReactDOMServer.renderToString(
           <div id="root">
             <p>404</p>
           </div>
         );
+        console.log("err")
         return res.send(indexFileData
           .replace(`<div id="root"></div>`,renderRequestResponse)
         );
