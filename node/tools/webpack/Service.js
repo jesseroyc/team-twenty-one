@@ -1,7 +1,7 @@
 import webpack from 'webpack';
 import Config  from './Config.js';
 
-export default class Service {
+class Service {
   
   constructor(env){
     this.config = new Config();
@@ -27,3 +27,4 @@ export default class Service {
   }
   */
 }
+export default new Service();

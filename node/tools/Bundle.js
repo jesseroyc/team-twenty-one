@@ -1,80 +1,40 @@
-import WebpackService from './webpack/Service';
+import path from 'path';
+import webpackService from './webpack/Service';
+import { writeFile, copyFile, makeDir, copyDir, cleanDir } from './lib/fs';
+import chokidar from 'chokidar';
 
-// TO DO 
-// bundle development to build
-// bundle production to dist
-// watch /build
-// copy assets over
+// TO DO
 // assemble manifest from bundle
+// add webpack.config to watch
 // clean up design so that:
 // webpack/service <- webpack/config <- tools/service <- tools/config
 
-const webpackService = new WebpackService();
-webpackService.bundleServer();
+const watchDirectory = path.resolve(__dirname,'../src');
+const publicSrcDir   = path.resolve(__dirname,'../src/view/public');
+const publicBuildDir = path.resolve(__dirname,'../build/public');
 
+/**
+ * Watcher deffinition
+ * https://github.com/paulmillr/chokidar
+ */
+chokidar.watch(watchDirectory, {
+  ignored: /(^|[\/\\])\../,
+  persistent: true,
+  ignoreInitial: false
+}).on('ready', () => {
+  console.log(`Starting server bundle watch at: \n\n ${watchDirectory}\n`);
+  webpackService.bundleServer();
+  updatePublic();
+}).on('change', (event, path) => {
+  webpackService.bundleServer();
+  updatePublic();
+});
 
-
-
-// Copy inspiration
-// vvvvvvvvvvvvvvvv
-
-
-
-// import path from 'path';
-// import chokidar from 'chokidar';
-// import { writeFile, copyFile, makeDir, copyDir, cleanDir } from './lib/fs';
-// import pkg from '../package.json';
-// import { format } from './run';
-
-// async function copy() {
-//   await makeDir('build');
-//   await Promise.all([
-//     writeFile(
-//       'build/package.json',
-//       JSON.stringify(
-//         {
-//           private: true,
-//           engines: pkg.engines,
-//           dependencies: pkg.dependencies,
-//           scripts: {
-//             start: 'node server.js',
-//           },
-//         },
-//         null,
-//         2,
-//       ),
-//     ),
-//     copyFile('LICENSE.txt', 'build/LICENSE.txt'),
-//     copyFile('yarn.lock', 'build/yarn.lock'),
-//     copyDir('public', 'build/public'),
-//   ]);
-
-//   if (process.argv.includes('--watch')) {
-//     const watcher = chokidar.watch(['public/**/*'], { ignoreInitial: true });
-
-//     watcher.on('all', async (event, filePath) => {
-//       const start = new Date();
-//       const src = path.relative('./', filePath);
-//       const dist = path.join(
-//         'build/',
-//         src.startsWith('src') ? path.relative('src', src) : src,
-//       );
-//       switch (event) {
-//         case 'add':
-//         case 'change':
-//           await makeDir(path.dirname(dist));
-//           await copyFile(filePath, dist);
-//           break;
-//         case 'unlink':
-//         case 'unlinkDir':
-//           cleanDir(dist, { nosort: true, dot: true });
-//           break;
-//         default:
-//           return;
-//       }
-//       const end = new Date();
-//       const time = end.getTime() - start.getTime();
-//       console.info(`[${format(end)}] ${event} '${dist}' after ${time} ms`);
-//     });
-//   }
-// }
+/**
+ * Node filesystem update
+ */ 
+async function updatePublic () {
+  await Promise.all([
+    copyDir(publicSrcDir, publicBuildDir),
+  ]);
+}
