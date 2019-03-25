@@ -1,41 +1,85 @@
-const path = require('path');
-const nodeExternals = require("webpack-node-externals");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+import path from 'path';
+import nodeExternals from "webpack-node-externals";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import HtmlWebpackPlugin from "html-webpack-plugin";
 
-module.exports = {
-  entry: path.resolve(__dirname, 'src/server/server.js'),
-  output: {
-    path: path.resolve(__dirname, 'build'),
-    filename: 'server.js'
-  },
-  target: 'node',
-  node: {
-    __dirname: false,
-    __filename: false,
-  },
-  externals: [nodeExternals()],
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        use: {
-          loader: "babel-loader"
-        }
-      },
-      {
-        test: /\.css$/,
-        use:  [  'style-loader', MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader']
-      }
-    ]
-  },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: 'style.css',
-    }),
-    new HtmlWebpackPlugin({
-      template: 'public/index.html',
-      filename: 'index.html' //relative to root of the application
-    })
-  ],
-};
+function config (envs,argv) {
+  return {
+    
+    /** development or production, determines
+     * ref:
+     */
+    mode: envs.MODE,
+    
+    /** tell webpack where src, build, dist is
+     * ref:
+     */
+    context: argv.ROOT_DIR,
+    
+    /** process rules for filetypes
+     * ref:
+     */
+    module: {
+      rules: [
+        {
+          test:  /\.(js|jsx|mjs)$/,
+          loader: 'babel-loader',
+        },
+        {
+          test: /\.(css|less|styl|scss|sass|sss)$/,
+          loader: 'css-loader',
+          options: {
+            importLoaders: 1,
+            modules: true,
+          },
+        },
+      ],
+    },
+  };
+}
+
+export function serverConfig (envs,argv) {
+  return {
+    
+    target: 'node',
+    
+    node: {
+      __dirname: false,
+      __filename: false,
+    },
+    
+    externals: [nodeExternals()],
+    
+    /** files that maintain runtime
+     * ref:
+     */
+    entry: argv.SERVER_FILE,
+    
+    /** build and dist transpiled/minified outputs
+     * ref:
+     */
+    output: {
+      path: argv.BUILD_DIR,
+      filename: argv.OUTPUT_NAME
+    },
+    
+    ...config(envs,argv),
+  };
+}
+
+export function clientConfig (envs,argv) {
+  return {
+
+    entry: argv.CLIENT_FILE,
+    
+    /** build and dist transpiled/minified outputs
+     * ref:
+     */
+    output: {
+      path: argv.BUILD_DIR,
+      filename: argv.CLIENT_FILE
+    },
+    
+    ...config(envs,argv),
+  };
+}

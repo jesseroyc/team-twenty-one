@@ -15,9 +15,9 @@ export default class MongoService {
   }
   
   static incrementId() {
-    if (!this.latestId) this.latestId = 1;
-    else this.latestId++;
-    return this.latestId;
+    return !this.latestId 
+    ? this.latestId = 1
+    : this.latestId++;
   }
   
   setRecord(tmperature,moisture,brightness){
@@ -79,7 +79,6 @@ export default class MongoService {
     let PORT = this.PORT;
     let USER = this.USER;
     let PASS = this.PASS;
-    let record = this.record;
     
     const url = `mongodb://${USER}:${PASS}@${HOST}:${PORT}`;
     MongoClient.connect(url, { useNewUrlParser: true }, function(err, client) {
