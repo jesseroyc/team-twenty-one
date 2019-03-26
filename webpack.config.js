@@ -3,18 +3,19 @@ import nodeExternals from "webpack-node-externals";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 
-function config (envs,argv) {
+function config (envs,dirs,files) {
+  //console.log(envs,dirs,files)
   return {
     
     /** development or production, determines
      * ref:
      */
-    mode: envs.MODE,
+    mode: envs.NODE_ENV,
     
     /** tell webpack where src, build, dist is
      * ref:
      */
-    context: argv.ROOT_DIR,
+    context: dirs.root,
     
     /** process rules for filetypes
      * ref:
@@ -38,7 +39,7 @@ function config (envs,argv) {
   };
 }
 
-export function serverConfig (envs,argv) {
+export function serverConfig (envs,dirs,files) {
   return {
     
     target: 'node',
@@ -53,33 +54,33 @@ export function serverConfig (envs,argv) {
     /** files that maintain runtime
      * ref:
      */
-    entry: argv.SERVER_FILE,
+    entry: files.srcServer,
     
     /** build and dist transpiled/minified outputs
      * ref:
      */
     output: {
-      path: argv.BUILD_DIR,
-      filename: argv.OUTPUT_NAME
+      path: dirs.mode,
+      filename: files.serverName
     },
     
-    ...config(envs,argv),
+    ...config(envs,dirs,files),
   };
 }
 
-export function clientConfig (envs,argv) {
+export function clientConfig (envs,dirs,files) {
   return {
 
-    entry: argv.CLIENT_FILE,
+    entry: files.srcClient,
     
     /** build and dist transpiled/minified outputs
      * ref:
      */
     output: {
-      path: argv.BUILD_DIR,
-      filename: argv.CLIENT_FILE
+      path: dirs.build,
+      filename: files.clientName,
     },
     
-    ...config(envs,argv),
+    ...config(envs,dirs,files),
   };
 }
