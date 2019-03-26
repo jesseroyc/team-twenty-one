@@ -7,10 +7,6 @@ import FileSystemService from './filesystem/Service';
  */
 class Config {
   constructor(){
-    // Setup Member Function Binds - Optimization
-    this.setupDirs     = this.setupDirs.bind(this);
-    this.setupFiles    = this.setupFiles.bind(this);
-    this.setupEnvs     = this.setupEnvs.bind(this);
     // Getter Member Function Binds - Optimization
     this.getEnvs       = this.getEnvs.bind(this);
     this.getDirs       = this.getDirs.bind(this);
@@ -21,70 +17,83 @@ class Config {
     // Setter Member Function Binds - Optimization
     this.setEnvs       = this.setEnvs.bind(this);
     // Member Variables
-    this.config = {
-        dirs:  this.setupDirs(),
-        files: this.setupFiles(),
-        envs:  this.setupEnvs(),
-    };
-    this.filesystem = FileSystemService;
-  }
-  setupDirs(){
-    
-    let mode = (this.config.envs.NODE_ENV === 'development')
-    ? path.resolve(__dirname,'../build')
-    : path.resolve(__dirname,'../dist');
-    
-    return {
-      mode:     mode,
-      root:     path.resolve(__dirname,'..'),
-      src:      path.resolve(__dirname,'../src'),
-      srcPub:   path.resolve(__dirname,'../src/public'),
-      build:    path.resolve(__dirname,'../build'),
-      buildPub: path.resolve(__dirname,'../build/public'),
-      dist:     path.resolve(__dirname,'../dist'),
-      distPub:  path.resolve(__dirname,'../dist/public'),
-    };
-  }
-  setupFiles(){
-    const serverFileName = 'server.js';
-    const clientFileName = 'client.js';
-    return {
-      serverName:  serverFileName,
-      clientName:  clientFileName,
-      srcServer:   path.resolve(__dirname,'../src/' + serverFileName),
-      buildServer: path.resolve(__dirname,'../build/' + serverFileName),
-      distServer:  path.resolve(__dirname,'../dist/' + serverFileName),
-      webpack: path.resolve(__dirname,'../webpack.config.js'),
-    };
-  }
-  setupEnvs(){
-    const dotenv = require('dotenv').config();
-    if (dotenv.error) { throw dotenv.error }
-    const { parsed: envs } = dotenv;
-    return envs;
-  }
-  setEnvs(env){ 
-    console.log(env);
-    for (let key in this.config.envs)
-      this.config.envs[key] = env[key];
+    this.envs = setupEnvs();
+    this.dirs = setupDirs();
+    this.files = setupFiles();
+    function setupEnvs(){
+      const dotenv = require('dotenv').config();
+      if (dotenv.error) { throw dotenv.error }
+      const { parsed: envs } = dotenv;
+      return envs;
+    }
+    function setupDirs(){
+      return {
+        mode:     path.resolve(__dirname,'../build'),
+        root:     path.resolve(__dirname,'..'),
+        src:      path.resolve(__dirname,'../src'),
+        srcPub:   path.resolve(__dirname,'../src/public'),
+        build:    path.resolve(__dirname,'../build'),
+        buildPub: path.resolve(__dirname,'../build/public'),
+        dist:     path.resolve(__dirname,'../dist'),
+        distPub:  path.resolve(__dirname,'../dist/public'),
+      };
+    }
+    function setupFiles(){
+      const serverFileName = 'server.js';
+      const clientFileName = 'client.js';
+      return {
+        serverName:  serverFileName,
+        clientName:  clientFileName,
+        srcServer:   path.resolve(__dirname,'../src/' + serverFileName),
+        buildServer: path.resolve(__dirname,'../build/' + serverFileName),
+        distServer:  path.resolve(__dirname,'../dist/' + serverFileName),
+        webpack: path.resolve(__dirname,'../webpack.config.js'),
+      };
+    }
   }
   getEnvs(){ 
-    return this.config.envs();
+    return this.envs;
   }
   getDirs(){
-    return this.config.dirs();
+    return this.dirs;
   }
   getFiles(){
-    return this.config.files();
+    return this.files;
+  }
+  setEnvs(env){
+    if(env)
+      for (let key in this.envs)
+        this.envs[key] = env[key];
+  }
+  setDirs(dirs){
+    if(dirs)
+      for (let key in this.dirs)
+        this.dirs[key] = dirs[key];
+  }
+  setFiles(files){
+    if(files)
+      for (let key in this.files)
+        this.files[key] = files[key];
   }
   getWebpack(){
-    return new WebpackService(this.config);
+    const config = {
+      envs: this.getEnvs(),
+      dirs: this.getDirs(),
+      files: this.getFiles(),
+    };
+    console.log(this.getEnvs())
+    return new WebpackService(config);
   }
   getDocker(){
-    return new DockerService(this.config);
+    const config = {
+      envs: this.getEnvs(),
+      dirs: this.getDirs(),
+      files: this.getFiles(),
+    };
+    return new DockerService(config);
   }
   getFileSystem(){
-    return this.filesystem;
+    return FileSystemService;
   }
 }
 

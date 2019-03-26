@@ -16,48 +16,51 @@ class Service {
     this.cleanDocker = this.cleanDocker.bind(this);
     // Member Variables
     this.config = new Config();
+    this.fs = this.config.getFileSystem();
   }
-  
-  updateEnvironment(updateEnvs){
-    const fs = this.config.getFileSystem();
+  updateEnv(updateEnvs){
+    this.config.setEnvs(updateEnvs);
+    
+    const fs = this.fs;
     const dirs = this.config.getDirs();
-    (async () => {
-      let text = await fs.readFile(dirs.root + '/.env');
-      let env = {};
-      text.replace(/(\w+)=((\d+)|.+)/g, function($0, $1, $2, $3) {
-          env[$1] = $3 ? Number($3) : $2;
-      });
-      
-      for (let key in updateEnvs) {
-        env[key] = updateEnvs[key];
+    const envs = this.config.getEnvs();
+    
+    const production = dirs.dist;
+    const development = dirs.build;
+    
+    if (envs.NODE_ENV === 'production')
+      dirs['mode'] = production;
+    if (envs.NODE_ENV === 'development') 
+      dirs['mode'] = development;
+    this.config.setDirs(dirs);
+    
+    let text = [];
+    for (let key in updateEnvs) {
+      envs[key] = updateEnvs[key];
+    }
+    for (let key in envs) {
+      if (envs.hasOwnProperty(key)) {
+        text.push(key + '=' + envs[key]);
       }
-      
-      text = [];
-      for (let key in env) {
-          if (env.hasOwnProperty(key)) {
-              text.push(key + '=' + env[key]);
-          }
-      }
-      text = text.join('\n');
-      (async (text) => {
-        await fs.writeFile(dirs.root + '/.env',text);
-      })(text);
-    })(updateEnvs);
-    return updateEnvs;
+    }
+    text = text.join('\n');
+    (async (text) => {
+      await fs.writeFile(dirs.root + '/.env',text);
+    })(text);
   }
   
   bundleBuild() {
     
-    const config = this.config;
-    
-    config.setEnvs(this.updateEnvironment({
+    const devMode = {
       NODE_ENV:'development',
       SERVER_PORT:8080
-    }));
+    };
     
-    const fs = config.getFileSystem();
-    const dirs = config.getDirs();
-    const webpack = config.getWebpack();
+    this.updateEnv(devMode);
+    
+    const fs = this.config.getFileSystem();
+    const dirs = this.config.getDirs();
+    const webpack = this.config.getWebpack();
     
     chokidar.watch(dirs.src, { persistent: true }).on('ready', () => {
       console.log(`Starting server bundle watch at: \n\n ${dirs.src}\n`);
@@ -77,16 +80,16 @@ class Service {
   
   bundleDist(){
     
-    const config = this.config;
-    
-    config.setEnvs(this.updateEnvironment({
+    const devMode = {
       NODE_ENV:'production',
       SERVER_PORT:80
-    }));
+    };
     
-    const fs = config.getFileSystem();
-    const dirs = config.getDirs();
-    const webpack = config.getWebpack();
+    this.updateEnv(devMode);
+    
+    const fs = this.config.getFileSystem();
+    const dirs = this.config.getDirs();
+    const webpack = this.config.getWebpack();
     
     chokidar.watch(dirs.src, { persistent: true }).on('ready', () => {
       console.log(`Starting server bundle watch at: \n\n ${dirs.src}\n`);
@@ -99,7 +102,7 @@ class Service {
     
     async function updatePublic () {
       await Promise.all([
-        fs.copyDir(dirs.srcPub, dirs.buildPub),
+        fs.copyDir(dirs.srcPub, dirs.distPub),
       ]);
     }
   }

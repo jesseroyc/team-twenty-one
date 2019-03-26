@@ -13,6 +13,9 @@
   "license": "MIT",
   "main": "server.js",
   "dependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/plugin-transform-runtime": "^7.4.0",
     "async": "^2.6.2",
     "bcrypt": "^3.0.4",
     "compression": "^1.7.4",

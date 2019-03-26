@@ -6,6 +6,7 @@ class Config {
     this.server = this.server.bind(this);
     this.client = this.client.bind(this);
     // Member Variables
+    console.log(config)
     this.envs = config.envs;
     this.dirs = config.dirs;
     this.files = config.files;
