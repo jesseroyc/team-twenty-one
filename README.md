@@ -3,7 +3,7 @@
   | |  | -_|| .'||     |  | |  | | | || -_||   ||  _|| | ||  |  ||   || -_|
   |_|  |___||__,||_|_|_|  |_|  |_____||___||_|_||_|  |_  ||_____||_|_||___|
                                                      |___|                 
- --------------------------------------------------------------------------
+ -----------------------------------------------------------------------------
 
 Node.js app featuring React, MongoDb, Express, Webpack, Babel, PM2, Docker and 
 Docker-Compose. It was developed in a Cloud IDE hosted in the same AWS EC2 Ubuntu 
