@@ -20,18 +20,19 @@ export default class MongoService {
     : this.latestId++;
   }
   
-  setRecord(tmperature,moisture,brightness){
+  setRecord(tmperature,moisture,humidity,pressure){
     this.record = {
       _id: this.recordId, 
       tim: Math.floor(Date.now() / 1000),
       tmp: tmperature,
       moi: moisture,
-      lum: brightness
+      hum: humidity,
+      pre: pressure
     };
   }
   
   /* STORE READING FROM URL PARAMS */
-  insertReading(DB_NAME,COL_NAME){
+  insertReading(res,DB_NAME,COL_NAME){
     
     let HOST = this.HOST;
     let PORT = this.PORT;
@@ -52,11 +53,13 @@ export default class MongoService {
       }
       client.db(DB_NAME).collection(COL_NAME).insertOne( record, function(err, res) {
         if (err) {
+          res.send(`Failed 'insert' client request for ${COL_NAME} in ${DB_NAME}`);
           logger.info(`Failed 'insert' client request for ${COL_NAME} in ${DB_NAME}`);
           console.error(err);
           client.close();
         } 
         else {
+          res.send(`Successful 'insert' client request for ${COL_NAME} in ${DB_NAME}`);
           logger.info(`Successful 'insert' client request for ${COL_NAME} in ${DB_NAME}`);
           logger.info("Inserted Record:" +
                       "\n  {" +
@@ -64,7 +67,8 @@ export default class MongoService {
                       "\n    tim: " + res.ops[0]["tim"] +
                       "\n    tmp: " + res.ops[0]["tmp"] +
                       "\n    moi: " + res.ops[0]["moi"] +
-                      "\n    lum: " + res.ops[0]["lum"] +
+                      "\n    hum: " + res.ops[0]["hum"] +
+                      "\n    pre: " + res.ops[0]["pre"] +
                       "\n  }"
           );
         }
@@ -99,11 +103,13 @@ export default class MongoService {
         else {
           let tmpArr = result.map(ele => parseFloat(ele.tmp)).filter(num => !Number.isNaN(num));
           let moiArr = result.map(ele => parseFloat(ele.moi)).filter(num => !Number.isNaN(num));
-          let lumArr = result.map(ele => parseFloat(ele.lum)).filter(num => !Number.isNaN(num));
+          let humArr = result.map(ele => parseFloat(ele.hum)).filter(num => !Number.isNaN(num));
+          let preArr = result.map(ele => parseFloat(ele.pre)).filter(num => !Number.isNaN(num));
           logger.info(`Successful 'find' client request for ${COL_NAME} in ${DB_NAME}` +
           `\nTemperature Readings:\n [${tmpArr}]` +
           `\nMoisture Readings:\n [${moiArr}]` +
-          `\nBrightness Readings:\n [${lumArr}]`
+          `\nHumidity Readings:\n [${humArr}]` +
+          `\nPressure Readings:\n [${preArr}]` 
           );
         }
       });

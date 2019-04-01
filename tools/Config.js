@@ -81,7 +81,6 @@ class Config {
       dirs: this.getDirs(),
       files: this.getFiles(),
     };
-    console.log(this.getEnvs())
     return new WebpackService(config);
   }
   getDocker(){

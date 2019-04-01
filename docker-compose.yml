@@ -3,7 +3,7 @@ services:
   node:
     image         : node:carbon
     container_name: Node
-    build         : ./node
+    build         : .
     ports:
       - "80:80"
   mongodb:

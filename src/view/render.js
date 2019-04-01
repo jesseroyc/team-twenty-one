@@ -3,15 +3,14 @@ import fs        from 'graceful-fs';
 import path      from 'path';
 import serialize from 'serialize-javascript';
 
-import React                       from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
 import ReactDOMServer              from "react-dom/server";
 import { StaticRouter, matchPath } from 'react-router-dom';
 import App                         from './App.js';
 import Routes                      from './routes/index.js';
 
-function index (req,res) {
+function render (req,res) {
     
   const currentRoute = Routes.find( route => matchPath(req.url, route) ) || {};
   const promise = (currentRoute.loadData) ? currentRoute.loadData() : Promise.resolve(null);
@@ -31,14 +30,14 @@ function index (req,res) {
       // REVIEW: Using const
       // TO DO: Integrate react apps for responses
       if (context.status === 404) { 
-        console.log("err")
+        console.log("err");
         res.status(404);
         const renderRequestResponse = ReactDOMServer.renderToString(
           <div id="root">
             <p>404</p>
           </div>
         );
-        console.log("err")
+        console.log("err");
         return res.send(indexFileData
           .replace(`<div id="root"></div>`,renderRequestResponse)
         );
@@ -67,4 +66,4 @@ function index (req,res) {
   });
 }
 
-export default index;
+export default render;

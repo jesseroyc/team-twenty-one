@@ -27,14 +27,15 @@ app.use(express.static(path.join(__dirname, 'public')));
  * Receives and stores data from Arduino MK2
  * Retrieves data from mongo database
  */
-app.get('/record/:tmp/:moi/:lum',function(req,res,next){
+app.get('/record/:tmp/:moi/:hum/:pre',function(req,res,next){
   let mongoService = new MongoService("mongodb","27017","admin","4dmInP4ssw0rd");
-  mongoService.setRecord(req.params.tmp,req.params.moi,req.params.lum);
-  mongoService.insertReading("mydatabase","records");
+  mongoService.setRecord(req.params.tmp,req.params.moi,req.params.hum,req.params.pre);
+  mongoService.insertReading(res,"mydatabase","records");
 });
 app.get('/record',function(req,res,next){
   let mongoService = new MongoService("mongodb","27017","admin","4dmInP4ssw0rd");
   mongoService.getReadings("mydatabase","records");
+  next();
 });
 
 /**
