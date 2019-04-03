@@ -35,7 +35,7 @@ class Todos extends React.Component {
 
   render() {
     const { data } = this.state;
-    return <ul>{data.map(todo => <li key={todo.id}>{todo.title}</li>)}</ul>;
+    return <p></p>;
   }
 }
 

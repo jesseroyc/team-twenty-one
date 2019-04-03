@@ -10,7 +10,7 @@ import { StaticRouter, matchPath } from 'react-router-dom';
 import App                         from './App.js';
 import Routes                      from './routes/index.js';
 
-function render (req,res) {
+function render (req,res,message) {
     
   const currentRoute = Routes.find( route => matchPath(req.url, route) ) || {};
   const promise = (currentRoute.loadData) ? currentRoute.loadData() : Promise.resolve(null);
@@ -23,24 +23,7 @@ function render (req,res) {
     fs.readFile(indexFile, 'utf8', (err, indexFileData) => {
       
       if (err) {
-        console.error('Error:', err);
-        return res.status(500).end();
-      }
-      
-      // REVIEW: Using const
-      // TO DO: Integrate react apps for responses
-      if (context.status === 404) { 
-        console.log("err");
-        res.status(404);
-        const renderRequestResponse = ReactDOMServer.renderToString(
-          <div id="root">
-            <p>404</p>
-          </div>
-        );
-        console.log("err");
-        return res.send(indexFileData
-          .replace(`<div id="root"></div>`,renderRequestResponse)
-        );
+        console.error(err);
       }
       
       // REVIEW: Using const
@@ -55,9 +38,30 @@ function render (req,res) {
         
       );
       
-      console.log("\n"+renderRequestResponse+"\n");
-      
+      console.log(message);
       return res.send(indexFileData
+        .replace(`<div id="data"></div>`,`
+        <h2>Temperature Data</h2>
+        <p>${message.tmp.toString()}22.51,22.51,22.53</p>
+        <p> </p>
+        <h2>Moisture Data</h2>
+        <p>${message.moi.toString()}355,351,353</p>
+        <p> </p>
+        <h2>Pressure Data</h2>
+        <p>${message.pre.toString()}89769.84,89772.52,89770.2</p>
+        <p> </p>
+        <h2>Humidity Data</h2>
+        <p>${message.hum.toString()}55.81,55.85,55.64</p>
+        <p> </p>
+        <canvas id="myChart" width="400" height="400"></canvas>
+        <script>
+          var ctx = $('#myChart');
+          var myChart = new Chart(ctx, {
+              type: 'line',
+              data: ${message.tmp},
+              options: options
+          });
+        </script>`)
         .replace(`<div id="root"></div>`,renderRequestResponse)
         .replace('</body>',`<script>window.__ROUTE_DATA__=${serialize(data)}</script></body>`)
       );

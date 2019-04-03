@@ -30,11 +30,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/record/:tmp/:moi/:hum/:pre',function(req,res,next){
   let mongoService = new MongoService("mongodb","27017","admin","4dmInP4ssw0rd");
   mongoService.setRecord(req.params.tmp,req.params.moi,req.params.hum,req.params.pre);
-  mongoService.insertReading(res,"mydatabase","records");
+  mongoService.insertReading("mydatabase","records")
+  .then(function(message){
+    res.send(message);
+  }).catch(function(message){
+    res.send(message);
+  });
 });
 app.get('/record',function(req,res,next){
   let mongoService = new MongoService("mongodb","27017","admin","4dmInP4ssw0rd");
-  mongoService.getReadings("mydatabase","records");
+  mongoService.getReadings("mydatabase","records")
+  .then(function(message){
+    res.send(message);
+  }).catch(function(message){
+    res.send(message);
+  });
   next();
 });
 
@@ -42,7 +52,13 @@ app.get('/record',function(req,res,next){
  * Register Server Side Rendering
  */
 app.get('*', function(req, res) {
-  render(req,res);
+  let mongoService = new MongoService("mongodb","27017","admin","4dmInP4ssw0rd");
+  mongoService.getReadings("mydatabase","records")
+  .then(function(message){
+    render(req,res,message);
+  }).catch(function(message){
+    render(req,res,message);
+  });
 });
  
 /**
