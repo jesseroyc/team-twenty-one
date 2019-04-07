@@ -5,8 +5,8 @@
 #include "Relay.h"
 //#include <EEPROM.h>
 
-#define RELAY1 0x19
-#define RELAY2 0x18
+#define RELAY1 0x18
+#define RELAY2 0x19
 #define SAFETY_TIME 1000
 #define MODE_ADDRESS 0x00
 

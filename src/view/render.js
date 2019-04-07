@@ -42,16 +42,16 @@ function render (req,res,message) {
       return res.send(indexFileData
         .replace(`<div id="data"></div>`,`
         <h2>Temperature Data</h2>
-        <p>${message.tmp.toString()}22.51,22.51,22.53</p>
+        <p>${message.tmp.toString()}</p>
         <p> </p>
         <h2>Moisture Data</h2>
-        <p>${message.moi.toString()}355,351,353</p>
+        <p>${message.moi.toString()}</p>
         <p> </p>
         <h2>Pressure Data</h2>
-        <p>${message.pre.toString()}89769.84,89772.52,89770.2</p>
+        <p>${message.pre.toString()}</p>
         <p> </p>
         <h2>Humidity Data</h2>
-        <p>${message.hum.toString()}55.81,55.85,55.64</p>
+        <p>${message.hum.toString()}</p>
         <p> </p>
         <canvas id="myChart" width="400" height="400"></canvas>
         <script>

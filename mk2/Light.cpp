@@ -1,14 +1,17 @@
 #include "Light.h"
 
 Light::Light() {
+#if UNO
+    byte lightModeStored = EEPROM.read(MODE_ADDRESS);
+    if(lightModeStored != VEG_MODE | lightModeStored != BLOOM_MODE) {
+        _lightMode = VEG_MODE;
+        EEPROM.write(VEG_MODE, MODE_ADDRESS);
+    } else {
+        _lightMode = lightModeStored;
+    }
+#else
     _lightMode = VEG_MODE;
-   //byte lightModeStored = EEPROM.read(MODE_ADDRESS);
-//    if(lightModeStored != VEG_MODE | lightModeStored != BLOOM_MODE) {
-//        _lightMode = VEG_MODE;
-//        //EEPROM.write(VEG_MODE, MODE_ADDRESS);
-//    } else {
-//        _lightMode = lightModeStored;
-//    }
+#endif
     _lightState = LIGHT_OFF;
     _relay1 = new Relay(RELAY1);
     _relay2 = new Relay(RELAY2);
@@ -41,7 +44,9 @@ void Light::setLightMode(Light::lightMode newLightMode) {
     } else if(getLightState() == LIGHT_ON && _lightMode != newLightMode) {
         setLightState(LIGHT_OFF);
         _lightMode = newLightMode;
-        //EEPROM.write(newLightMode, MODE_ADDRESS);
+#if UNO
+        EEPROM.write(newLightMode, MODE_ADDRESS);
+#endif
         setLightState(LIGHT_ON);
     }
 }
