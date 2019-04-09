@@ -8,13 +8,18 @@
                                                 
                                                 
 ```
-
 Node.js app featuring React, MongoDb, Express, Webpack, Babel, PM2, Docker and 
 Docker-Compose. It was developed in a Cloud IDE hosted in the same AWS EC2 Ubuntu 
 16.04 server it was deployed on. This is an ssr project that features an isomorphic 
 design as well. The app handles get and post requests from an Arduino MK2 that is
 reporting sensor readings for a automated plant incubator system.
-
+\
+To check out the demo visit: <a href="http://www.team-twenty-one.com/">Demo</a>
+\
+Some of the rendering may not happen correctly, this can be adjusted in the
+code. The scope of this project was to live update the graph using server side
+rendering from an arduino MK2.
+\
 If using a Cloud9 environment the commands below were necessary for docker to behave
 properly. In a local environment it should be as simple as cd'ing in and running 
 `npm install`, `npm run build` and `npm run start`.
