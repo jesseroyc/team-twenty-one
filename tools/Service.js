@@ -65,24 +65,15 @@ class Service {
     
     this.updateEnv(envMode);
     
-    const fs = this.config.getFileSystem();
     const dirs = this.config.getDirs();
     const webpack = this.config.getWebpack();
     
     chokidar.watch(dirs.src, { persistent: true }).on('ready', () => {
       process.stdout.write(`Bundling development server with watch: \n\n ${dirs.src}\n`);
       webpack.bundleServer();
-      updatePublic();
     }).on('change', (event, path) => {
       webpack.bundleServer();
-      updatePublic();
     });
-    
-    async function updatePublic () {
-      await Promise.all([
-        fs.copyDir(dirs.srcPub, dirs.buildPub),
-      ]);
-    }
   }
   
   dist(){

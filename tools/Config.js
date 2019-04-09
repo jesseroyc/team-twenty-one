@@ -30,21 +30,21 @@ class Config {
       return {
         mode:     path.resolve(__dirname,'../build'),
         root:     path.resolve(__dirname,'..'),
-        src:      path.resolve(__dirname,'../src'),
-        srcPub:   path.resolve(__dirname,'../src/public'),
+        src:      path.resolve(__dirname,'../server'),
+        srcPub:   path.resolve(__dirname,'../public'),
         build:    path.resolve(__dirname,'../build'),
-        buildPub: path.resolve(__dirname,'../build/public'),
+        buildPub: path.resolve(__dirname,'../build'),
         dist:     path.resolve(__dirname,'../dist'),
-        distPub:  path.resolve(__dirname,'../dist/public'),
+        distPub:  path.resolve(__dirname,'../dist'),
       };
     }
     function setupFiles(){
-      const serverFileName = 'server.js';
+      const serverFileName = 'index.js';
       const clientFileName = 'client.js';
       return {
         serverName:  serverFileName,
         clientName:  clientFileName,
-        srcServer:   path.resolve(__dirname,'../src/' + serverFileName),
+        srcServer:   path.resolve(__dirname,'../server/' + serverFileName),
         buildServer: path.resolve(__dirname,'../build/' + serverFileName),
         distServer:  path.resolve(__dirname,'../dist/' + serverFileName),
         webpack: path.resolve(__dirname,'../webpack.config.js'),

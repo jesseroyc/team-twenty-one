@@ -34,6 +34,10 @@ function config (envs,dirs,files) {
             modules: true,
           },
         },
+        {
+            test: /\.svg$/,
+            loader: 'svg-inline-loader'
+        }
       ],
     },
   };
@@ -61,7 +65,7 @@ export function serverConfig (envs,dirs,files) {
      */
     output: {
       path: dirs.mode,
-      filename: files.serverName
+      filename: 'server.js'
     },
     
     ...config(envs,dirs,files),
