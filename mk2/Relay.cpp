@@ -1,3 +1,4 @@
+// Developed in collaboration by <patrick@notthat.ca>
 #include "Relay.h"
 
 Relay::Relay(uint8_t address) {

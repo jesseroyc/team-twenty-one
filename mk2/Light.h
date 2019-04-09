@@ -1,3 +1,4 @@
+// Developed in collaboration by <patrick@notthat.ca>
 #ifndef LIGHTS_H
 #define LIGHTS_H
 

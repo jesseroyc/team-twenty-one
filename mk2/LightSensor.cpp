@@ -1,3 +1,4 @@
+// Developed in collaboration by <patrick@notthat.ca>
 #include "LightSensor.h"
 
 LightSensor::LightSensor(uint8_t address) {

@@ -1,0 +1,24 @@
+Sunlight (Direct)
+Lux: 32,000 -> inf Lux
+CH0: 4,300 -> 5,000
+CH1: 1,500 -> 2,700
+
+Shade (Edge)
+Lux: 5,700 -> 6,500 Lux
+CH0: 600 -> 750
+CH1: 150 -> 200 
+
+Full Shade
+Lux: 1,400 -> 1,700 Lux
+CH0: 215 -> 260
+CH1: 80 -> 90
+
+Veg Mode
+Lux: 4,200
+CH0: 330
+CH1: 35
+
+Bloom Mode
+Lux: 3,800
+CH0: 300
+CH1: 60

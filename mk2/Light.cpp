@@ -1,3 +1,4 @@
+// Developed in collaboration by <patrick@notthat.ca>
 #include "Light.h"
 
 Light::Light() {

@@ -1,3 +1,4 @@
+// Developed in collaboration by <patrick@notthat.ca>
 #ifndef SETTINGS_H
 #define SETTINGS_H
 //Status

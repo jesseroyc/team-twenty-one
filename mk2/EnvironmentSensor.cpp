@@ -1,3 +1,4 @@
+// Developed in collaboration by <patrick@notthat.ca>
 #include "EnvironmentSensor.h"
 
 EnvironmentSensor::EnvironmentSensor(uint8_t address) {
@@ -12,7 +13,7 @@ EnvironmentSensor::EnvironmentSensor(uint8_t address) {
     _enviroSensor.settings.pressOverSample = 1;
     _enviroSensor.settings.humidOverSample = 1;
     
-    uint8_t chipID = _enviroSensor.begin();
+    chipID = _enviroSensor.begin();
     
     if(chipID != 0x60) {
         Serial.println("ERROR: Environment sensor not found!");
@@ -31,7 +32,8 @@ EnvironmentSensor::EnvironmentSensor(uint8_t address) {
  * @return Temperature in degrees Celcius as a float.
  */
 float EnvironmentSensor::getTemp() {
-    return _enviroSensor.readTempC();
+//    return _enviroSensor.readTempC();
+    return chipID;
 }
 
 /*
@@ -40,7 +42,8 @@ float EnvironmentSensor::getTemp() {
  * @return Pressure in hPa as a float.
  */
 float EnvironmentSensor::getPressure() {
-    return _enviroSensor.readFloatPressure();
+//    return _enviroSensor.readFloatPressure();
+    return 101.3;
 }
 
 /*
@@ -49,5 +52,6 @@ float EnvironmentSensor::getPressure() {
  * @return % relative humidity as a float.
  */
 float EnvironmentSensor::getHumidity() {
-    return _enviroSensor.readFloatHumidity();
+//    return _enviroSensor.readFloatHumidity();
+    return 49.5;
 }

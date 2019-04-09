@@ -1,3 +1,4 @@
+// Developed in collaboration by <patrick@notthat.ca>
 #include "SoilSensor.h"
 
 SoilSensor::SoilSensor(uint8_t address) {

@@ -1,3 +1,4 @@
+// Developed in collaboration by <patrick@notthat.ca>
 #ifndef SOILSENSOR_H
 #define SOILSENSOR_H
 

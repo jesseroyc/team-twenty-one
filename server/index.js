@@ -6,7 +6,7 @@ import compression  from 'compression';
 import logger       from "./service/winston-logger";
 import morgan       from "morgan";
 import routes       from './routes/index.js';
-import MongoService from './service/mongoService.js';
+import mongoService from './service/mongoService.js';
 
 const app = express();
 
@@ -17,10 +17,8 @@ app.use(morgan('dev'));
 app.use(compression());
 app.use(cookieParser());
 app.use('/static', express.static(path.resolve(__dirname, 'static')));
-//app.use('record', routes.record);
 
 app.get('/record/:tmp/:moi/:hum/:pre',function(req,res,next){
-  let mongoService = new MongoService("mongodb","27017","admin","4dmInP4ssw0rd");
   mongoService.setRecord(req.params.tmp,req.params.moi,req.params.hum,req.params.pre);
   mongoService.insertReading("mydatabase","records")
   .then(function(dataSet){
@@ -30,7 +28,6 @@ app.get('/record/:tmp/:moi/:hum/:pre',function(req,res,next){
   });
 });
 app.get('/record',function(req,res,next){
-  let mongoService = new MongoService("mongodb","27017","admin","4dmInP4ssw0rd");
   mongoService.getReadings("mydatabase","records")
   .then(function(dataSet){
     res.send(dataSet);

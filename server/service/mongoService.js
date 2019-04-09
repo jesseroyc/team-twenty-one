@@ -3,7 +3,7 @@ import logger  from "./winston-logger";
 
 const MongoClient = mongodb.MongoClient;
 
-export default class MongoService {
+class MongoService {
   
   constructor(MONGO_HOST,MONGO_PORT,MONGO_USER,MONGO_PASS){
     this.HOST = MONGO_HOST;
@@ -22,7 +22,6 @@ export default class MongoService {
   
   setRecord(tmperature,moisture,humidity,pressure){
     this.record = {
-      _id: this.recordId, 
       tim: Math.floor(Date.now() / 1000),
       tmp: tmperature,
       moi: moisture,
@@ -119,3 +118,5 @@ export default class MongoService {
     });
   }
 }
+const mongoService = new MongoService("mongodb","27017","admin","4dmInP4ssw0rd");
+export default mongoService;

@@ -1,3 +1,4 @@
+// Developed in collaboration by <patrick@notthat.ca>
 #ifndef LIGHTSENSOR_H
 #define LIGHTSENSOR_H
 

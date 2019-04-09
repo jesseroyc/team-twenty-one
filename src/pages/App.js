@@ -2,54 +2,53 @@ import React, { Component } from 'react';
 import logo from '../logo.svg';
 import Chart from 'react-google-charts';
 import './App.css';
+import 'isomorphic-fetch';
 
 class App extends Component {
   
   constructor(props) {
     super(props);
-    // for each
-    //chartData["time value"] = [tempEle,moisEle,humiEle,presEle];
-    this.state = { chartData : [
-        ['Time', 'Temperature', 'Moisture', 'Humidity', 'Pressure'],
-        [1,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [2,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [3,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [4,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [5,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [6,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [7,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [8,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [9,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [10,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [11,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [12,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [13,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [14,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-      ]
-    };
+    this.state = { chartData : [['Time', 'Temperature', 'Moisture', 'Humidity', 'Pressure']] };
   }
   
   componentDidMount() {
+
     setInterval(() => {
-      this.setState({ chartData: [
-        ['Time', 'Temperature', 'Moisture', 'Humidity', 'Pressure'],
-        [1,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [2,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [3,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [4,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [5,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [6,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [7,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [8,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [9,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [10,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [11,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [12,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [13,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        [14,Math.floor(Math.random() * Math.floor(100)), Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100)),Math.floor(Math.random() * Math.floor(100))],
-        ]
+      
+      fetch('http://www.team-twenty-one.com/record')
+      .then((responseText) => responseText.text())
+      .then((response) => {
+        let tmp = JSON.parse(response);
+        console.log(tmp);
+        let a = []; for(let prop in tmp){a.push(tmp[prop])}
+        console.log(a);
+        tmp = transpose(a);
+        console.log(tmp);
+        console.log(['Time', 'Temperature', 'Moisture', 'Humidity', 'Pressure'],...tmp);
+        this.setState({ chartData: [
+          ['Time', 'Temperature', 'Moisture', 'Humidity', 'Pressure'],
+            ...tmp,
+            ]
+        });
       });
-    }, 900);
+      
+      function transpose(a) {
+
+        var w = a.length || 0;
+        var h = a[0] instanceof Array ? a[0].length : 0;
+
+        if(h === 0 || w === 0) { return []; }
+          var i, j, t = [];
+          
+        for(i=0; i<h; i++) {
+          t[i] = [];
+          for(j=0; j<w; j++) {
+            t[i][j] = a[j][i];
+          }
+        }
+        return t;
+      }
+    }, 5000);
   }
   
   render() {
